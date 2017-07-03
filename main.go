@@ -35,10 +35,12 @@ func main() {
 }
 
 func crawl(lastLoadID string) []event {
-	const URL = "https://eventdots.jp/event/search"
+	const URL = "https://techplay.jp/event/search"
+	const PERPAGE = 15
+	const MAXPAGE = 6
 
 	page := 1
-	eventList := make([]event, 0, 75)
+	eventList := make([]event, 0, PERPAGE*MAXPAGE)
 
 	for {
 		values := url.Values{}
@@ -55,7 +57,7 @@ func crawl(lastLoadID string) []event {
 			eventList = append(eventList, event)
 		}
 
-		if len(eventList) != page*15 || page == 5 {
+		if len(eventList) != page*PERPAGE || page == MAXPAGE {
 			break
 		}
 		page++
@@ -144,14 +146,17 @@ func notifySlack(eventList []event) {
 	}
 
 	api := slack.NewWebHook(webhook_url)
+	r := regexp.MustCompile(`Pepper`)
 	for _, event := range eventList {
-		message := fmt.Sprintf("日時: %s\nイベント名: %s\nURL: %s", event.Date, event.Title, event.URL)
-		err := api.PostMessage(&slack.WebHookPostPayload{
-			Text:    message,
-			Channel: channel,
-		})
-		if err != nil {
-			panic(err)
+		if !r.MatchString(event.Title) {
+			message := fmt.Sprintf("日時: %s\nイベント名: %s\nURL: %s", event.Date, event.Title, event.URL)
+			err := api.PostMessage(&slack.WebHookPostPayload{
+				Text:    message,
+				Channel: channel,
+			})
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 }

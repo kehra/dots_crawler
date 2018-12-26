@@ -86,7 +86,6 @@ func parseHTML(url string) []event {
 
 func parseDateDocument(s *goquery.Selection) string {
 	year := s.Find("div.year").Text()
-	place := s.Find("div.place").Text()
 	day := ""
 	time := ""
 
@@ -100,9 +99,12 @@ func parseDateDocument(s *goquery.Selection) string {
 		day = strings.TrimSpace(re.ReplaceAllString(html, ""))
 	} else {
 		day = days.Text()
-		time = s.Find("div.time").Text()
+		times := s.Find("div.time span")
+		startTime := times.First().Text()
+		endTime := times.Last().Text()
+		time = startTime + "〜" + endTime
 	}
-	return fmt.Sprintf("%s/%s %s (%s)", year, day, time, place)
+	return fmt.Sprintf("%s/%s %s", year, day, time)
 }
 
 func parseTitleDocument(s *goquery.Selection) (title string, href string) {

@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/bluele/slack"
@@ -159,6 +160,7 @@ func notifySlack(eventList []event) {
 			if err != nil {
 				panic(err)
 			}
+			time.Sleep(3 * time.Second)
 		}
 	}
 }

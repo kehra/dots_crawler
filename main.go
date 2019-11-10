@@ -77,7 +77,7 @@ func parseHTML(url string) []event {
 		date := parseDateDocument(s.Find("div.date"))
 		title, href := parseTitleDocument(s.Find("div.title"))
 
-		re := regexp.MustCompile("https://eventdots.jp/event/(\\d+)")
+		re := regexp.MustCompile("https://techplay.jp/event/(\\d+)")
 		id := re.ReplaceAllString(href, "$1")
 
 		events[i] = event{ID: id, Date: date, Title: title, URL: href}

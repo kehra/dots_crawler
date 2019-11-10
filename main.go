@@ -46,7 +46,7 @@ func crawl(lastLoadID string) []event {
 	for {
 		values := url.Values{}
 		values.Add("pref", "13,14")
-		values.Add("sort", "created_desc")
+		values.Add("sort", "created_at.desc")
 		values.Add("page", strconv.Itoa(page))
 
 		events := parseHTML(URL + "?" + values.Encode())
